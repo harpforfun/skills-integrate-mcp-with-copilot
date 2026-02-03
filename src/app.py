@@ -83,9 +83,41 @@ def root():
     return RedirectResponse(url="/static/index.html")
 
 
+from fastapi import Query
+
 @app.get("/activities")
-def get_activities():
-    return activities
+def get_activities(
+    search: str = Query(None),
+    filter_type: str = Query(None),
+    sort: str = Query(None)
+):
+    filtered = {}
+    for name, details in activities.items():
+        # Filter by type (simple heuristic based on name)
+        if filter_type:
+            t = filter_type.lower()
+            if t == "club" and "club" not in name.lower():
+                continue
+            if t == "team" and "team" not in name.lower():
+                continue
+            if t == "class" and "class" not in name.lower():
+                continue
+            if t == "other" and ("club" in name.lower() or "team" in name.lower() or "class" in name.lower()):
+                continue
+        # Search filter
+        if search:
+            s = search.lower()
+            if s not in name.lower() and s not in details["description"].lower():
+                continue
+        filtered[name] = details
+
+    # Sort
+    if sort == "name":
+        filtered = dict(sorted(filtered.items(), key=lambda x: x[0].lower()))
+    elif sort == "participants":
+        filtered = dict(sorted(filtered.items(), key=lambda x: len(x[1]["participants"]), reverse=True))
+
+    return filtered
 
 
 @app.post("/activities/{activity_name}/signup")
