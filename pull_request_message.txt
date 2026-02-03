@@ -1,0 +1,13 @@
+## Add filters, sort, and search to activities page
+
+This PR implements the following enhancements for issue #4 ([Add filters](https://github.com/harpforfun/skills-integrate-mcp-with-copilot/issues/4)):
+
+- Added a toolbar above the activity cards with:
+  - Category filter (Club, Team, Class, Other)
+  - Sort options (by Name, by Participants)
+  - Free text search
+- Updated backend to support filtering, sorting, and searching via query parameters
+- Updated frontend to dynamically filter, sort, and search activities
+- Ensured the UI looks good on desktop and phone
+
+Closes #4
